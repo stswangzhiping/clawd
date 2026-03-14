@@ -1,0 +1,22 @@
+{
+  "name": "clawd",
+  "version": "0.1.0",
+  "description": "Claw Box daemon - connects local Linux box to claw.cutos.ai via WebSocket",
+  "main": "lib/client.js",
+  "bin": {
+    "clawd": "./bin/clawd.js"
+  },
+  "scripts": {
+    "start": "node bin/clawd.js"
+  },
+  "keywords": ["claw", "iot", "websocket", "daemon"],
+  "author": "stswangzhiping",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "ws": "^8.18.0",
+    "systeminformation": "^5.25.0"
+  }
+}
