@@ -48,6 +48,47 @@ if command -v dnsmasq &>/dev/null; then
   info "dnsmasq ✓"
 fi
 
+# ── 启用 NetworkManager（WiFi 配网需要）──────────────────────────────────────
+if command -v nmcli &>/dev/null; then
+  if ! systemctl is-active --quiet NetworkManager 2>/dev/null; then
+    info "启用 NetworkManager..."
+    systemctl enable --now NetworkManager 2>/dev/null || true
+  fi
+  info "NetworkManager ✓"
+fi
+
+# ── WiFi rfkill 解锁（部分设备默认禁用 WiFi）────────────────────────────────
+for rf in /sys/class/rfkill/rfkill*; do
+  if [ -f "$rf/type" ] && [ "$(cat "$rf/type")" = "wlan" ]; then
+    if [ "$(cat "$rf/soft")" = "1" ]; then
+      info "解锁 WiFi ($(basename "$rf"))..."
+      echo 0 > "$rf/soft"
+    fi
+  fi
+done
+
+# 持久化：创建 systemd 服务确保开机自动解锁 WiFi
+RFKILL_SERVICE="/etc/systemd/system/clawd-rfkill.service"
+if [ ! -f "$RFKILL_SERVICE" ]; then
+  cat > "$RFKILL_SERVICE" <<EOF
+[Unit]
+Description=Unblock WiFi for clawd
+Before=NetworkManager.service clawd.service
+After=sys-subsystem-net-devices-wlan0.device
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'for rf in /sys/class/rfkill/rfkill*; do [ "\$(cat \$rf/type)" = "wlan" ] && echo 0 > \$rf/soft; done'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  systemctl daemon-reload
+  systemctl enable clawd-rfkill
+  info "WiFi rfkill 解锁服务已创建（开机自动执行）✓"
+fi
+
 # ── 安装 clawd ───────────────────────────────────────────────────────────────
 INSTALL_DIR="/opt/clawd"
 CONFIG_DIR="/etc/clawd"

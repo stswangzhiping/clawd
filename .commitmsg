@@ -1,0 +1,7 @@
+fix: dnsmasq path detection and WiFi rfkill persistence
+
+- dns-hijack.js: replace `which` with multi-path search (/usr/sbin etc.)
+  since dnsmasq is often not in normal user PATH
+- install.sh: auto-enable NetworkManager for WiFi provisioning
+- install.sh: unblock WiFi rfkill at install time
+- install.sh: create clawd-rfkill.service for persistent boot-time unlock
