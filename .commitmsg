@@ -1,5 +1,5 @@
-fix: kill NetworkManager's dnsmasq before starting our own
+fix: clawd-rfkill.service failed due to systemd $ expansion
 
-NetworkManager auto-starts its own dnsmasq when creating a hotspot,
-which conflicts with our DNS-hijacking dnsmasq on the same interface.
-Now kill ALL dnsmasq instances before starting ours.
+systemd expands $rf as env var (empty), breaking the inline script.
+Move rfkill logic to standalone script to avoid escaping issues.
+Also use quoted heredoc to prevent bash expansion in install.sh.

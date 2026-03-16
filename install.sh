@@ -67,10 +67,22 @@ for rf in /sys/class/rfkill/rfkill*; do
   fi
 done
 
-# 持久化：创建 systemd 服务确保开机自动解锁 WiFi
+# 持久化：独立脚本 + systemd 服务，确保开机自动解锁 WiFi
+RFKILL_SCRIPT="/usr/local/bin/clawd-unblock-wifi.sh"
+cat > "$RFKILL_SCRIPT" << 'SCRIPT'
+#!/bin/sh
+for rf in /sys/class/rfkill/rfkill*; do
+  [ -f "$rf/type" ] || continue
+  if [ "$(cat "$rf/type")" = "wlan" ] && [ "$(cat "$rf/soft")" = "1" ]; then
+    echo 0 > "$rf/soft"
+    echo "clawd-rfkill: unblocked $(basename "$rf")"
+  fi
+done
+SCRIPT
+chmod +x "$RFKILL_SCRIPT"
+
 RFKILL_SERVICE="/etc/systemd/system/clawd-rfkill.service"
-if [ ! -f "$RFKILL_SERVICE" ]; then
-  cat > "$RFKILL_SERVICE" <<EOF
+cat > "$RFKILL_SERVICE" << 'UNIT'
 [Unit]
 Description=Unblock WiFi for clawd
 Before=NetworkManager.service clawd.service
@@ -78,16 +90,15 @@ After=sys-subsystem-net-devices-wlan0.device
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c 'for rf in /sys/class/rfkill/rfkill*; do [ "\$(cat \$rf/type)" = "wlan" ] && echo 0 > \$rf/soft; done'
+ExecStart=/usr/local/bin/clawd-unblock-wifi.sh
 RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target
-EOF
-  systemctl daemon-reload
-  systemctl enable clawd-rfkill
-  info "WiFi rfkill 解锁服务已创建（开机自动执行）✓"
-fi
+UNIT
+systemctl daemon-reload
+systemctl enable clawd-rfkill
+info "WiFi rfkill 解锁服务已创建 ✓"
 
 # ── 安装 clawd ───────────────────────────────────────────────────────────────
 INSTALL_DIR="/opt/clawd"
