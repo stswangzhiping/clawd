@@ -1,5 +1,9 @@
-fix: clawd-rfkill.service failed due to systemd $ expansion
+feat: AP always-on mode - hotspot stays until WiFi STA connects
 
-systemd expands $rf as env var (empty), breaking the inline script.
-Move rfkill logic to standalone script to avoid escaping issues.
-Also use quoted heredoc to prevent bash expansion in install.sh.
+Redesign provisioning from one-shot blocking to persistent background manager:
+- AP hotspot starts at boot regardless of eth0 status
+- Captive portal runs alongside AP for WiFi configuration
+- AP automatically shuts down only when WiFi STA connects
+- WiFi drops at runtime -> AP auto-restarts
+- WiFi connect fails -> AP auto-restarts for retry
+- client.js no longer blocks on network; connects WS when ready
