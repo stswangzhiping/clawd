@@ -1,4 +1,5 @@
-fix: set AP hotspot password to fixed WPA2 PSK "12345678"
+fix: kill NetworkManager's dnsmasq before starting our own
 
-Open network was not viable as nmcli generates random password by default.
-Use a simple fixed password since the AP is only for short-lived provisioning.
+NetworkManager auto-starts its own dnsmasq when creating a hotspot,
+which conflicts with our DNS-hijacking dnsmasq on the same interface.
+Now kill ALL dnsmasq instances before starting ours.
