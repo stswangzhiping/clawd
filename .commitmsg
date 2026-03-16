@@ -1,9 +1,9 @@
-feat: AP always-on mode - hotspot stays until WiFi STA connects
+fix: wait for NM auto-reconnect before starting AP on reboot
 
-Redesign provisioning from one-shot blocking to persistent background manager:
-- AP hotspot starts at boot regardless of eth0 status
-- Captive portal runs alongside AP for WiFi configuration
-- AP automatically shuts down only when WiFi STA connects
-- WiFi drops at runtime -> AP auto-restarts
-- WiFi connect fails -> AP auto-restarts for retry
-- client.js no longer blocks on network; connects WS when ready
+After WiFi is configured and device reboots, NetworkManager needs
+a few seconds to auto-connect to saved WiFi. Without waiting,
+AP starts immediately and occupies wlan0, preventing NM reconnect.
+
+- Add hasSavedWifiConnection() to check for saved WiFi profiles
+- Wait up to 20s for NM auto-connect before falling back to AP
+- First boot (no saved WiFi) still starts AP immediately
