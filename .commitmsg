@@ -1,9 +1,9 @@
-fix: wait for NM auto-reconnect before starting AP on reboot
+fix: stop killing NM's dnsmasq - use dnsmasq-shared.d instead
 
-After WiFi is configured and device reboots, NetworkManager needs
-a few seconds to auto-connect to saved WiFi. Without waiting,
-AP starts immediately and occupies wlan0, preventing NM reconnect.
+Killing all dnsmasq processes caused NetworkManager to detect its
+hotspot dnsmasq died and tear down the hotspot (AP appears briefly
+then disappears).
 
-- Add hasSavedWifiConnection() to check for saved WiFi profiles
-- Wait up to 20s for NM auto-connect before falling back to AP
-- First boot (no saved WiFi) still starts AP immediately
+Now leverage NM's built-in dnsmasq-shared.d config directory:
+write DNS hijack config before starting AP so NM's own dnsmasq
+picks it up. No separate dnsmasq process needed.
