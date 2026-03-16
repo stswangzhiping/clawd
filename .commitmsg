@@ -1,5 +1,6 @@
-fix: pre-scan WiFi before entering AP mode
+ui: redesign WiFi list with signal bars and cleaner layout
 
-wlan0 cannot scan while in AP mode (hardware limitation).
-Now scan nearby networks before starting hotspot and cache
-the results for the captive portal page.
+- Replace <select> with scrollable list of clickable items
+- Show signal strength as 4-bar icon instead of percentage text
+- Remove security info from parentheses, show lock icon only
+- Smaller font size for compact mobile display
