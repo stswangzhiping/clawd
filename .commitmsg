@@ -1,9 +1,1 @@
-fix: stop killing NM's dnsmasq - use dnsmasq-shared.d instead
-
-Killing all dnsmasq processes caused NetworkManager to detect its
-hotspot dnsmasq died and tear down the hotspot (AP appears briefly
-then disappears).
-
-Now leverage NM's built-in dnsmasq-shared.d config directory:
-write DNS hijack config before starting AP so NM's own dnsmasq
-picks it up. No separate dnsmasq process needed.
+docs: add WiFi provisioning user manual to README
