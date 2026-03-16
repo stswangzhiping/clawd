@@ -1,1 +1,11 @@
-docs: add WiFi provisioning user manual to README
+fix: EROFS dns config, double WS connection, and watchdog timeout
+
+1. EROFS: install.sh pre-writes DNS hijack config to dnsmasq-shared.d
+   since /etc may be read-only at runtime. dns-hijack.js gracefully
+   falls back to checking if config already exists.
+
+2. Double WS: add _connectionStarted guard to prevent _proceedWithConnection
+   from being called twice (via event + hasInternet check).
+
+3. Watchdog: move _startSdNotify() to start() beginning so READY=1
+   is sent immediately, not delayed until network is ready.

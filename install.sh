@@ -55,6 +55,16 @@ if command -v nmcli &>/dev/null; then
     systemctl enable --now NetworkManager 2>/dev/null || true
   fi
   info "NetworkManager ✓"
+
+  # 预写 DNS 劫持配置（运行时 /etc 可能为只读）
+  NM_DNSMASQ_DIR="/etc/NetworkManager/dnsmasq-shared.d"
+  mkdir -p "$NM_DNSMASQ_DIR"
+  cat > "$NM_DNSMASQ_DIR/clawd-captive.conf" << 'DNSCONF'
+# clawd captive portal DNS hijack
+# All DNS queries resolve to gateway to trigger captive portal
+address=/#/10.42.0.1
+DNSCONF
+  info "DNS 劫持配置已写入 $NM_DNSMASQ_DIR ✓"
 fi
 
 # ── WiFi rfkill 解锁（部分设备默认禁用 WiFi）────────────────────────────────
