@@ -28,6 +28,26 @@ if [ "$MAJOR" -lt 18 ]; then
 fi
 info "Node.js $NODE_VER ✓"
 
+# ── 检查/安装 dnsmasq（WiFi 配网需要）──────────────────────────────────────
+if ! command -v dnsmasq &>/dev/null; then
+  info "安装 dnsmasq（WiFi 配网所需）..."
+  if command -v apt-get &>/dev/null; then
+    apt-get install -y -qq dnsmasq >/dev/null 2>&1
+  elif command -v yum &>/dev/null; then
+    yum install -y -q dnsmasq >/dev/null 2>&1
+  elif command -v apk &>/dev/null; then
+    apk add --quiet dnsmasq >/dev/null 2>&1
+  else
+    warn "无法自动安装 dnsmasq，WiFi 配网功能可能不可用"
+  fi
+  # 禁止 dnsmasq 系统服务自启（clawd 自己管理）
+  systemctl disable dnsmasq 2>/dev/null || true
+  systemctl stop dnsmasq 2>/dev/null || true
+fi
+if command -v dnsmasq &>/dev/null; then
+  info "dnsmasq ✓"
+fi
+
 # ── 安装 clawd ───────────────────────────────────────────────────────────────
 INSTALL_DIR="/opt/clawd"
 CONFIG_DIR="/etc/clawd"

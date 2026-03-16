@@ -99,6 +99,18 @@ systemctl disable clawd      # 取消开机自启
 | `load_1m` / `load_5m` / `load_15m` | 系统负载 | — |
 | `uptime` | 运行时间 | 秒 |
 
+## WiFi 配网（无屏设备）
+
+首次开机无网络时，clawd 自动进入 AP 配网模式：
+
+1. 设备开启热点 `ClawBox-{ID}`（无密码）
+2. 用户手机连接该热点
+3. 自动弹出配网页面（或访问 `http://ap.cutos.ai`）
+4. 选择家庭 WiFi 并输入密码
+5. 设备连接成功后自动接入云端
+
+需要 `dnsmasq`（安装脚本会自动安装）和 `NetworkManager`。
+
 ## 架构
 
 ```
@@ -111,8 +123,12 @@ clawd/
 │   ├── frpc.js            ← frpc/ttyd/dashboard 管理（Watchdog 守护）
 │   ├── logger.js          ← 结构化日志 + 文件轮转
 │   ├── metrics.js         ← 系统指标采集
-│   └── watchdog.js        ← 通用子进程守护（速率限制重启）
-├── install.sh             ← 一键安装（含 systemd）
+│   ├── watchdog.js        ← 通用子进程守护（速率限制重启）
+│   ├── network.js         ← 网络检测、WiFi 扫描/连接、AP 模式
+│   ├── dns-hijack.js      ← dnsmasq 管理（DNS 劫持 + DHCP）
+│   ├── captive-server.js  ← 配网 HTTP 页面（Captive Portal）
+│   └── provisioning.js    ← 配网编排（检测→AP→配网→退出）
+├── install.sh             ← 一键安装（含 systemd + dnsmasq）
 └── package.json
 ```
 
