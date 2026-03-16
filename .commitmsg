@@ -1,7 +1,4 @@
-fix: dnsmasq path detection and WiFi rfkill persistence
+fix: set AP hotspot password to fixed WPA2 PSK "12345678"
 
-- dns-hijack.js: replace `which` with multi-path search (/usr/sbin etc.)
-  since dnsmasq is often not in normal user PATH
-- install.sh: auto-enable NetworkManager for WiFi provisioning
-- install.sh: unblock WiFi rfkill at install time
-- install.sh: create clawd-rfkill.service for persistent boot-time unlock
+Open network was not viable as nmcli generates random password by default.
+Use a simple fixed password since the AP is only for short-lived provisioning.
