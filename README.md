@@ -83,6 +83,14 @@ systemctl stop clawd         # 停止
 systemctl disable clawd      # 取消开机自启
 ```
 
+## 更新
+
+clawd 安装在 `/opt/clawd`，更新时需在该目录执行 `git pull`：
+
+```bash
+cd /opt/clawd && sudo git pull && sudo systemctl restart clawd
+```
+
 ## 日志
 
 - **stdout/journald**：所有日志同时输出到标准输出（systemd 自动采集到 journald）
