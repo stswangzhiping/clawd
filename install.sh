@@ -187,6 +187,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 EnvironmentFile=$ENV_FILE
+ExecStartPre=/bin/sh -c 'echo 1 > /sys/devices/platform/openvfd/attr/b1 2>/dev/null; echo 1 > /sys/devices/platform/openvfd/attr/b2 2>/dev/null; true'
 ExecStart=$NODE_BIN $INSTALL_DIR/bin/clawd.js
 WorkingDirectory=$INSTALL_DIR
 
