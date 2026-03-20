@@ -181,8 +181,8 @@ cat > "$SERVICE_FILE" <<EOF
 [Unit]
 Description=Claw Box Daemon
 Documentation=https://github.com/stswangzhiping/clawd
-After=network-online.target
-Wants=network-online.target
+After=NetworkManager.service
+Wants=NetworkManager.service
 
 [Service]
 Type=simple
