@@ -207,10 +207,8 @@ MemoryMax=256M
 CPUQuota=50%
 TasksMax=64
 
-# 安全加固
-NoNewPrivileges=true
-ProtectSystem=strict
-ProtectHome=read-only
+# 安全加固（ttyd 子进程需要 setuid sudo，不能用 NoNewPrivileges/strict）
+ProtectSystem=full
 ReadWritePaths=$CONFIG_DIR /tmp
 
 # 日志
