@@ -119,8 +119,10 @@ info "安装到 $INSTALL_DIR ..."
 mkdir -p "$INSTALL_DIR"
 cd "$INSTALL_DIR"
 
-# 下载源码
-if command -v git &>/dev/null; then
+# 下载源码（若目录已有 package.json，视为离线/已解压部署，跳过 git/tarball；避免设备无法访问 github.com）
+if [ -f "package.json" ]; then
+  info "检测到已有源码，跳过 git/tarball 下载"
+elif command -v git &>/dev/null; then
   if [ -d ".git" ]; then
     git pull --quiet
   else
