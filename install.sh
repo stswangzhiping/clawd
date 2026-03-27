@@ -189,8 +189,6 @@ Wants=NetworkManager.service
 [Service]
 Type=simple
 EnvironmentFile=$ENV_FILE
-# 部分机型无 openvfd 或路径不同；不存在则跳过（3528 等新板可忽略）
-ExecStartPre=/bin/sh -c 'for p in /sys/devices/platform/openvfd/attr/b1 /sys/devices/platform/openvfd/attr/b2; do [ -e "$p" ] && echo 1 >"$p" 2>/dev/null || true; done'
 ExecStart=$NODE_BIN $INSTALL_DIR/bin/clawd.js
 WorkingDirectory=$INSTALL_DIR
 
