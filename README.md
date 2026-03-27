@@ -14,6 +14,41 @@ Claw Box 守护进程，将本地 Linux 设备通过 WebSocket 长连接接入 [
 - systemd 集成：Watchdog、资源限制、优雅停止
 - 全局异常兜底（uncaughtException / unhandledRejection）
 
+### 仓库路径
+
+| 项 | 说明 |
+|----|------|
+| GitHub | <https://github.com/stswangzhiping/clawd> |
+| 克隆后目录 | 一般为仓库根目录 `clawd/`（本机路径按你的开发环境填写） |
+| 设备上安装路径 | 通常为 `/opt/clawd`（见下文「更新」） |
+
+### 模块一览（速查）
+
+| # | 模块 | 作用 |
+|---|------|------|
+| 1 | `bin/clawd.js` | 入口：启动守护进程，SIGINT/SIGTERM 优雅退出 |
+| 2 | `lib/config.js` | 读/写 `config.json`：云端地址、`claw_id`、`token` |
+| 3 | `lib/fingerprint.js` | 生成并持久化 `box_id`（machine-id、CPU 序列、MAC 等） |
+| 4 | `lib/client.js` | WebSocket：连接、注册、心跳、Ping/Pong、重连、与配网/LED/FRP 联动 |
+| 5 | 连接消息 | `connect`：box_id、凭证、本机/外网 IP、地理位置、openclaw dashboard 信息 |
+| 6 | 心跳 | 周期性 `heartbeat`；部分带 `metrics`（CPU/内存/磁盘/温度/负载/运行时间） |
+| 7 | `lib/metrics.js` | 系统指标采集（systeminformation） |
+| 8 | `lib/frpc.js` | 下载 frpc、写 `frpc.toml`、HTTP 子域转发 dashboard、TCP 转发 ttyd；Watchdog |
+| 9 | `lib/frpc.js`（ttyd） | 本机 Web 终端（`CLAWD_TTY_USER`，默认 `sts`），供 frp 反代 |
+| 10 | OpenClaw 联动 | 激活后更新 `~/.openclaw/config/config.yaml` 中 gateway origin，可选重启 gateway |
+| 11 | `lib/provisioning.js` | AP 配网：等待 NM 重连、有线先连云端再后台开 AP、WiFi 断再开 AP |
+| 12 | `lib/network.js` | `nmcli`：联网检测、WiFi 扫描/连接、开/关热点 |
+| 13 | `lib/dns-hijack.js` | Captive Portal：NM `dnsmasq-shared.d`（install 预写） |
+| 14 | `lib/captive-server.js` | 配网 HTTP 页面、`/api/scan`（缓存）、`/api/connect` |
+| 15 | `lib/led.js` | 前面板 WiFi/BT/SETUP/APPS 等指示灯与数码管 |
+| 16 | `lib/bt-monitor.js` | 蓝牙状态轮询，驱动 BT 灯 |
+| 17 | `lib/logger.js` | 结构化日志、文件轮转 |
+| 18 | `lib/watchdog.js` | 子进程（如 frpc）崩溃自动重启（限频） |
+| 19 | systemd | `systemd-notify`：READY / WATCHDOG |
+| 20 | `install.sh` | 依赖、dnsmasq、NM、rfkill、预写 DNS、systemd 单元 |
+
+**一句话**：WebSocket 上云 + 心跳与指标 + **frp/ttyd 远程控制台与终端** + **无屏 WiFi 配网** + **LED/蓝牙** + **OpenClaw 域名联动**。
+
 ## 快速安装（Linux，需要 root）
 
 ```bash
@@ -188,7 +223,9 @@ clawd/
 │   ├── network.js         ← 网络检测、WiFi 扫描/连接、AP 模式
 │   ├── dns-hijack.js      ← DNS 劫持（NM dnsmasq-shared.d 配置）
 │   ├── captive-server.js  ← 配网 HTTP 页面（Captive Portal）
-│   └── provisioning.js    ← AP 常驻管理器（WiFi 状态监控）
+│   ├── provisioning.js    ← AP 常驻管理器（WiFi 状态监控）
+│   ├── led.js             ← 前面板指示灯 / 数码管
+│   └── bt-monitor.js      ← 蓝牙状态 → BT 灯
 ├── install.sh             ← 一键安装（含 systemd + dnsmasq）
 └── package.json
 ```
