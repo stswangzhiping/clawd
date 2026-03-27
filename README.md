@@ -35,7 +35,7 @@ Claw Box 守护进程，将本地 Linux 设备通过 WebSocket 长连接接入 [
 | 7 | `lib/metrics.js` | 系统指标采集（systeminformation） |
 | 8 | `lib/frpc.js` | 下载 frpc、写 `frpc.toml`、HTTP 子域转发 dashboard、TCP 转发 ttyd；Watchdog |
 | 9 | `lib/frpc.js`（ttyd） | 本机 Web 终端（`CLAWD_TTY_USER`，默认 `sts`），供 frp 反代 |
-| 10 | OpenClaw 联动 | 激活后更新 `~/.openclaw/config/config.yaml` 中 gateway origin，可选重启 gateway |
+| 10 | OpenClaw 联动 | 激活后更新 `~/.openclaw/openclaw.json` 中 gateway origin（字符串字段内 URL），可选重启 gateway |
 | 11 | `lib/provisioning.js` | AP 配网：等待 NM 重连、有线先连云端再后台开 AP、WiFi 断再开 AP |
 | 12 | `lib/network.js` | `nmcli`：联网检测、WiFi 扫描/连接、开/关热点 |
 | 13 | `lib/dns-hijack.js` | Captive Portal：NM `dnsmasq-shared.d`（install 预写） |
