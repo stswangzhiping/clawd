@@ -188,6 +188,8 @@ Wants=NetworkManager.service
 
 [Service]
 Type=simple
+# systemd-notify 由子进程执行，默认 NotifyAccess=main 会拒收；需 all 才能喂 WatchdogSec
+NotifyAccess=all
 EnvironmentFile=$ENV_FILE
 ExecStart=$NODE_BIN $INSTALL_DIR/bin/clawd.js
 WorkingDirectory=$INSTALL_DIR
