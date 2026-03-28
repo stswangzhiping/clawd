@@ -171,7 +171,7 @@ CLAWD_LOG_FILE=1
 # CLAWD_DISABLE_BT=1
 # OpenVFD sysfs 根路径（默认 /sys/class/leds/openvfd）
 # CLAWD_OPENVFD_PATH=/sys/class/leds/openvfd
-# LAN 灯跟 carrier：务必设为实际以太网口（如 end0），拔网线才能可靠熄灭
+# 多网口/特殊板型可固定 LAN 灯监控的以太网口（默认由 clawd 自动锁定首次 carrier 口）
 # CLAWD_ETH_IFACE=end0
 EOF
   info "环境变量文件已创建：$ENV_FILE ✓"
