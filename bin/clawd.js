@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
+// 先于其它模块：摘掉 NOTIFY_SOCKET，避免任意子进程误发 systemd notify
+require('../lib/systemd-env');
+
 const { ClawClient } = require('../lib/client');
 const log = require('../lib/logger');
 
