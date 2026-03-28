@@ -195,7 +195,8 @@ WorkingDirectory=$INSTALL_DIR
 # 重启策略
 Restart=always
 RestartSec=5
-StartLimitIntervalSec=300
+# 旧版 systemd 不认 StartLimitIntervalSec，用 StartLimitInterval=（秒）
+StartLimitInterval=300
 StartLimitBurst=10
 
 # 优雅停止（10s 内 SIGTERM，超时 SIGKILL）
