@@ -172,6 +172,8 @@ CLAWD_LOG_FILE=1
 # CLAWD_ENABLE_BT=1
 # OpenVFD sysfs 根路径（默认 /sys/class/leds/openvfd）
 # CLAWD_OPENVFD_PATH=/sys/class/leds/openvfd
+# 数码管 vfdservice 管道（默认 /tmp/openvfd_service）
+# CLAWD_VFD_PIPE=/tmp/openvfd_service
 # 多网口/特殊板型可固定 LAN 灯监控的以太网口（默认由 clawd 自动锁定首次 carrier 口）
 # CLAWD_ETH_IFACE=end0
 EOF
