@@ -167,8 +167,9 @@ CLAWD_LOG_LEVEL=info
 CLAWD_LOG_FILE=1
 # 自定义服务器地址（留空则读 config.json）
 # CLAWD_SERVER=wss://claw.cutos.ai/ws
-# 关闭 BtMonitor（不执行 bluetoothctl）。需要蓝牙状态灯时请注释掉下一行。
-CLAWD_DISABLE_BT=1
+# BtMonitor（bluetoothctl）默认在程序内关闭，无需在此写 CLAWD_DISABLE_BT。
+# 若产品需要蓝牙指示灯，取消下一行注释：
+# CLAWD_ENABLE_BT=1
 # OpenVFD sysfs 根路径（默认 /sys/class/leds/openvfd）
 # CLAWD_OPENVFD_PATH=/sys/class/leds/openvfd
 # 多网口/特殊板型可固定 LAN 灯监控的以太网口（默认由 clawd 自动锁定首次 carrier 口）
