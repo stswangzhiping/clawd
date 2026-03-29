@@ -167,7 +167,7 @@ CLAWD_LOG_LEVEL=info
 CLAWD_LOG_FILE=1
 # 自定义服务器地址（留空则读 config.json）
 # CLAWD_SERVER=wss://claw.cutos.ai/ws
-# 无蓝牙机型（如部分 RK3528）：强制不写 bluetoothctl
+# 不跑 bluetoothctl / BtMonitor（有蓝牙但不想用也可设 1）
 # CLAWD_DISABLE_BT=1
 # OpenVFD sysfs 根路径（默认 /sys/class/leds/openvfd）
 # CLAWD_OPENVFD_PATH=/sys/class/leds/openvfd
