@@ -110,11 +110,12 @@ systemctl daemon-reload
 systemctl enable clawd-rfkill
 info "WiFi rfkill 解锁服务已创建 ✓"
 
-# ── 移除系统自带 ttyd（避免与 clawd 托管的 ttyd 端口冲突）────────────────────
-if command -v dpkg &>/dev/null && dpkg -l ttyd 2>/dev/null | grep -q '^ii'; then
-  info "移除系统 ttyd 包（避免端口冲突）..."
-  apt-get remove -y ttyd >/dev/null 2>&1 || true
-  info "系统 ttyd 已移除 ✓"
+# ── 安装 ttyd（Web 终端）────────────────────────────────────────────────────
+info "安装 ttyd..."
+if apt-get install -y ttyd >/dev/null 2>&1; then
+  info "ttyd 已安装 ✓"
+else
+  warn "ttyd 安装失败，Web 终端功能将不可用"
 fi
 
 # ── 安装 clawd ───────────────────────────────────────────────────────────────
@@ -150,31 +151,6 @@ chmod +x "$INSTALL_DIR/bin/clawd.js"
 
 info "clawd 已安装到 /usr/local/bin/clawd ✓"
 
-# ── 下载 ttyd（Web 终端）────────────────────────────────────────────────────
-TTYD_BIN="$CONFIG_DIR/ttyd"
-TTYD_VERSION="1.7.7"
-if [ ! -f "$TTYD_BIN" ]; then
-  ARCH=$(uname -m)
-  case "$ARCH" in
-    aarch64|arm64) TTYD_ARCH="aarch64" ;;
-    x86_64)        TTYD_ARCH="x86_64"  ;;
-    armv7l|armv6l) TTYD_ARCH="armv7l"  ;;
-    i686)          TTYD_ARCH="i686"    ;;
-    *)             TTYD_ARCH="x86_64"  ;;
-  esac
-  TTYD_URL="https://github.com/tsl0922/ttyd/releases/download/${TTYD_VERSION}/ttyd.${TTYD_ARCH}"
-  info "下载 ttyd ${TTYD_VERSION} (${TTYD_ARCH})..."
-  if curl -fsSL -o "$TTYD_BIN" "$TTYD_URL" && [ -s "$TTYD_BIN" ]; then
-    chmod 755 "$TTYD_BIN"
-    info "ttyd 已安装到 $TTYD_BIN ✓"
-  else
-    rm -f "$TTYD_BIN"
-    warn "ttyd 下载失败（网络问题？），请手动下载并放置到 $TTYD_BIN"
-    warn "  下载地址: $TTYD_URL"
-  fi
-else
-  info "ttyd 已存在，跳过下载 ✓"
-fi
 
 # ── 创建配置目录 + 环境变量文件 ──────────────────────────────────────────────
 mkdir -p "$CONFIG_DIR"
